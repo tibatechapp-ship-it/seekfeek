@@ -18,3 +18,8 @@
 
 ## Status
 Decision recorded 2026-10-27. Pending execution.
+
+## History cleanup plan
+- Run: git filter-repo --path node_modules --path dist --invert-paths
+- Then: git push --force-with-lease origin main
+- Verify: repo size < 20 MB after cleanup.

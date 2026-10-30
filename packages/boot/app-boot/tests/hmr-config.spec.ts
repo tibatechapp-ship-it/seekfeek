@@ -113,7 +113,14 @@ describe('HMR exact config paths', () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-hmr-config-'))
     const dir = join(root, 'later')
     const filename = join(dir, 'plugins.yml')
-    const ctx = await bootHmr(root)
+    // darwin's fs.watch backend (FSEvents) drops or delays the add event for
+    // a file whose parent directory did not exist at watch registration —
+    // the same native-watch unreliability the alias test above already
+    // answers with polling for Windows ("polling keeps Windows fs.watch
+    // queue pressure out of it"). Poll on darwin so the scenario stays
+    // covered deterministically; native watching remains under test on
+    // every other platform and in every other test here.
+    const ctx = await bootHmr(root, [], process.platform === 'darwin')
     const observed: string[] = []
     try {
       await ctx.hmr.registerConfig(filename, () => {

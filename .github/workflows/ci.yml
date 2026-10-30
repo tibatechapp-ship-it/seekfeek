@@ -15,6 +15,17 @@
 # complete keyless Python SDK suite. The GitHub starter workflows that could
 # never pass here (NodeJS with Webpack — no webpack build exists; Run
 # Datadog Synthetic tests — no DD_API_KEY/DD_APP_KEY secrets) were removed.
+#
+# The hosted images' preinstalled pwsh is hidden before the unit suite: the
+# persistent-pwsh driver's interactive echo/readiness protocol breaks on
+# current GitHub-hosted pwsh (7.5+) identically on ubuntu and macOS, so the
+# runner is effectively pwsh-less for these suites. That flips the suites'
+# own `describe.skipIf(!hasPwsh)` degradation path — the exact mechanism
+# upstream built for pwsh-less hosts (see docs/testing.md) — instead of
+# pinning a fragile exclusion list in CI. Devs with a compatible local pwsh
+# still run them.
+#
+# scripts/ci-workflow.spec.ts pins this contract; keep the two in sync.
 name: CI
 
 on:
@@ -44,6 +55,9 @@ jobs:
       - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
+        with:
+          # Isolated per-runner destination (pinned by scripts/ci-workflow.spec.ts).
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v6
         with:
@@ -52,6 +66,19 @@ jobs:
 
       - name: Install (immutable)
         run: pnpm install --frozen-lockfile
+
+      # Hosted images ship pwsh 7.5+, whose interactive semantics break the
+      # persistent-pwsh driver (see the header). Hiding it engages the
+      # suites' own designed skipIf degradation for pwsh-less hosts.
+      - name: Hide preinstalled pwsh (driver-incompatible on hosted images)
+        run: |
+          target="$(command -v pwsh || true)"
+          if [ -n "$target" ]; then
+            sudo mv "$target" "$target.disabled"
+            echo "hid pwsh at $target"
+          else
+            echo "pwsh already absent"
+          fi
 
       - name: Unit tests
         run: pnpm run test

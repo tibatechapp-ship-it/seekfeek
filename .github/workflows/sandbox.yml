@@ -92,20 +92,28 @@ jobs:
       # in the workflow, so run it here too — the platform-dependent unit
       # expectations (Seatbelt path canonicalization: /tmp IS /private/tmp)
       # take their darwin branch only on this runner.
+      #
+      # The runner image's preinstalled pwsh is hidden first: its interactive
+      # echo/readiness semantics break the persistent-pwsh driver (see the
+      # header of ci.yml), which would fail three pwsh real-shell specs that
+      # this leg does not exist to prove. Hiding it engages the suites' own
+      # `describe.skipIf(!hasPwsh)` degradation for pwsh-less hosts — the
+      # mechanism upstream built for exactly this — so no exclusion list is
+      # pinned here. The Sandbox e2e step below needs no pwsh.
+      - name: Hide preinstalled pwsh (driver-incompatible on hosted images)
+        if: matrix.runner == 'seatbelt'
+        run: |
+          target="$(command -v pwsh || true)"
+          if [ -n "$target" ]; then
+            sudo mv "$target" "$target.disabled"
+            echo "hid pwsh at $target"
+          else
+            echo "pwsh already absent"
+          fi
+
       - name: Unit tests (darwin parity)
         if: matrix.runner == 'seatbelt'
-        # The GitHub macos-latest (macos-15 arm) runner image ships a newer
-        # pwsh whose interactive echo/readiness semantics differ from the
-        # persistent-pwsh driver's expectations: submitted lines are echoed
-        # into scrollback (clipping the beginning of command output) and the
-        # wait reason resolves to inferred_idle instead of stdin_read. The
-        # three affected pwsh real-shell specs still run on the ubuntu unit
-        # job in ci.yml, so exclude only those two spec files here — this
-        # leg exists to prove Seatbelt confinement, not pwsh interactivity.
-        run: >-
-          pnpm exec vitest run
-          --exclude 'packages/terminal/terminal-bash/tests/local.spec.ts'
-          --exclude 'packages/shell/tool-pwsh-persistent/tests/loader-composition.spec.ts'
+        run: pnpm run test
 
       - name: Sandbox e2e (real kernel confinement, world-verified)
         # NO_COLOR: vitest force-enables ANSI color under GITHUB_ACTIONS even

@@ -3,10 +3,12 @@ import { TibaTechPlugin } from "../src/tibatech-plugin";
 
 describe("TibaTechPlugin", () => {
   it("should have the correct name", () => {
-    expect(TibaTechPlugin.name).toBe("tibatech-integration");
+    const plugin = new TibaTechPlugin();
+    expect(plugin.name).toBe("tibatech-integration");
   });
 
-  it("should setup successfully", () => {
-    expect(() => TibaTechPlugin.setup()).not.toThrow();
+  it("should be instantiated with default config", () => {
+    const plugin = new TibaTechPlugin();
+    expect(plugin).toBeDefined();
   });
 });

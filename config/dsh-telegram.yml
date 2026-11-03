@@ -2,5 +2,5 @@ plugins:
   - id: telegram-control
     name: "@wenbin_wb/dsh-bridge"
     config:
-      botToken: \"YOUR_TELEGRAM_BOT_TOKEN\"
+      botToken: "YOUR_TELEGRAM_BOT_TOKEN"
       allowedChatIds: []

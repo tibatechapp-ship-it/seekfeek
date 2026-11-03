@@ -8,7 +8,6 @@ export class TibaTechPlugin {
   public name = 'tibatech-integration';
 
   constructor(config?: NexusCoreConfig) {
-    // المنفذ 4141 مستخرج من وثيقة ARCHITECTURE.md الخاصة بـ nexus-core
     this.config = config || { baseUrl: 'http://127.0.0.1:4141' };
   }
 
@@ -28,6 +27,7 @@ export class TibaTechPlugin {
         })
       });
 
+      if (!response.ok) {
         throw new Error(`Nexus-Core responded with status: ${response.status}`);
       }
 

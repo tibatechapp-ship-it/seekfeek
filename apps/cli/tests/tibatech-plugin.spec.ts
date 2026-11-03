@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { TibaTechPlugin } from "../src/tibatech-plugin";
 
 describe("TibaTechPlugin", () => {

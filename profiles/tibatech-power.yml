@@ -1,5 +1,5 @@
-name: tibatech-power
-description: "TibaTech Power Profile — Ralph Loop, Agent Teams, MCP Memory & Browser"
+name: tibatech-master
+description: "TibaTech Ultimate Mix: Ralph Loop, Agent Teams, MCP, Nexus-Core Gateway, and Telegram Control"
 bundles:
   - "@deepseek-ai/dsh-web"
   - "@modelcontextprotocol/server-filesystem"
@@ -7,9 +7,17 @@ bundles:
   - "@modelcontextprotocol/server-browser"
   - "github:lonelycrab888/dsh-enhancement-switches#main"
   - "github:alllllllllli/Living-Dream-DSH#main"
+plugins:
+  - id: tibatech-gateway
+    name: "./apps/cli/src/tibatech-plugin.ts"
+  - id: telegram-control
+    name: "@wenbin_wb/dsh-bridge"
+    config:
+      botToken: "env:TELEGRAM_BOT_TOKEN"
+      allowedChatIds: []
 patches:
   - plugin: dsh-enhancement-switches
     config:
       ralphLoop: true
       agentTeams: true
-      codexSubagent: false
+      codexSubagent: true

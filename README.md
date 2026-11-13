@@ -2332,3 +2332,11 @@ console.log('\n🎉 All tests passed!');
 ```
 
 ---
+
+## ⚡ TibaTech Power Features
+تم تجهيز هذا المشروع بقدرات متقدمة تشبه Z.ai:
+- **Ralph Loop:** إعادة المحاولة التلقائية حتى النجاح.
+- **Agent Teams:** توزيع المهام على وكلاء متوازيين.
+- **MCP Memory & Browser:** ذاكرة طويلة الأمد وتحكم بالمتصفح.
+- **Codex Subagent:** تفويض المهام البرمجية.
+للتشغيل: `chmod +x start-tibatech.sh && ./start-tibatech.sh`

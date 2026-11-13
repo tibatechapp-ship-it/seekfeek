@@ -1,0 +1,15 @@
+name: tibatech-power
+description: "TibaTech Power Profile — Ralph Loop, Agent Teams, MCP Memory & Browser"
+bundles:
+  - "@deepseek-ai/dsh-web"
+  - "@modelcontextprotocol/server-filesystem"
+  - "@modelcontextprotocol/server-memory"
+  - "@modelcontextprotocol/server-browser"
+  - "github:lonelycrab888/dsh-enhancement-switches#main"
+  - "github:alllllllllli/Living-Dream-DSH#main"
+patches:
+  - plugin: dsh-enhancement-switches
+    config:
+      ralphLoop: true
+      agentTeams: true
+      codexSubagent: false
